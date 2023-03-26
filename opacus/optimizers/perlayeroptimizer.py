@@ -58,9 +58,8 @@ class DPPerLayerOptimizer(DPOptimizer):
             _check_processed_flag(p.grad_sample)
 
             per_sample_norms = p.grad_sample.view(len(p.grad_sample), -1).norm(2, dim=1)
-            per_sample_clip_factor = (max_grad_norm / (per_sample_norms + 1e-6)).clamp(
-                max=1.0
-            )
+            per_sample_clip_factor =max_grad_norm / (per_sample_norms + 0.01)
+
             grad = torch.einsum("i,i...", per_sample_clip_factor, p.grad_sample)
 
             if p.summed_grad is not None:
